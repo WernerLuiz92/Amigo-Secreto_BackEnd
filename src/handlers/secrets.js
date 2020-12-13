@@ -17,7 +17,17 @@ module.exports.create = async (event, context) => {
             ownerEmail: email,
             externalId,
             adminKey,
-        })        
+        })  
+        
+        return {
+            statusCode: 201,
+            body: JSON.stringify({
+                success: true,
+                id: externalId,
+                adminKey
+            }),
+        }
+        
     } catch (error) {
         console.log(error)
         return {
@@ -29,10 +39,53 @@ module.exports.create = async (event, context) => {
     }
 }
 
-module.exports.get = async (event) => {
+module.exports.get = async (event, context) => {
+    context.callbackWaitsForEmptyEventLoop = false
     
+    const { id: externalId } = event.pathParameters
+    const incomingAdminKey = event.headers['admin-key']
+
+    try {
+        const { participants, adminKey, drawResult } = await SecretModel.findOne({
+            externalId,
+        }).select('-_id participants adminKey drawResult').lean()
+
+        const isAdmin = !!(incomingAdminKey && incomingAdminKey === adminKey)
+
+        const result = {
+            participants,
+            hadDrew: !!drawResult.lenght,
+            isAdmin,
+        }
+
+        return {
+            statusCode: 200,
+            body: JSON.stringify(result),
+        }
+
+    } catch (error) {
+        console.log(error)
+        return {
+            statusCode: 500,
+            body: JSON.stringify({
+                success: false,
+            }),
+        }        
+    }
 }
 
-module.exports.draw = async (event) => {
+module.exports.draw = async (event, context) => {
+    context.callbackWaitsForEmptyEventLoop = false
     
+    try {
+        
+    } catch (error) {
+        console.log(error)
+        return {
+            statusCode: 500,
+            body: JSON.stringify({
+                success: false,
+            }),
+        }        
+    }
 }

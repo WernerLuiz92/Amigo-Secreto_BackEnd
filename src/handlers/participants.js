@@ -55,8 +55,32 @@ module.exports.create = async (event, context) => {
 module.exports.delete = async (event, context) => {
     context.callbackWaitsForEmptyEventLoop = false
     
+    const { id: secretId, participantId } = event.pathParameters
+    const adminKey = event.headers['admin-key']
+
     try {
-        
+        const result = await SecretModel.updateOne(
+            {
+                externalId: secretId,
+                adminKey,
+            },
+            {
+                $pull: {
+                    participants: {
+                        externalId: participantId,
+                    }
+                }
+            }
+        )
+
+        if (!result.nModified) {
+            throw new Error()
+        }
+
+        return {
+            statusCode: 204,
+        }
+
     } catch (error) {
         console.log(error)
         return {

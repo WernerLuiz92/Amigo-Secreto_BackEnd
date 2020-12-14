@@ -8,7 +8,7 @@ module.exports.create = async (event, context) => {
     context.callbackWaitsForEmptyEventLoop = false
 
     const { id: secretId } = event.pathParameters
-    const { name, email } = JSON.parse(event.body)
+    const { name, email, gift } = JSON.parse(event.body)
     const externalId = uuidv4()
 
 
@@ -24,12 +24,15 @@ module.exports.create = async (event, context) => {
                         externalId,
                         name,
                         email,
+                        gift,
                     }
                 }
             }
         )
 
         if (!result.nModified) {
+            console.log("Deu BO Aqui!!!!")
+            console.log(gift)
             throw new Error()
         }
         

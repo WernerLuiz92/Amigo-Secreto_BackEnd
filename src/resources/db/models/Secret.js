@@ -10,6 +10,7 @@ const Schema = {
         externalId: String,
         email: String,
         name: String,
+        gift: String,
     }],
     drawResult: [{
         _id: false,

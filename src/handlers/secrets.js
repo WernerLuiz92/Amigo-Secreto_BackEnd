@@ -55,7 +55,7 @@ module.exports.get = async (event, context) => {
 
         const result = {
             participants,
-            hadDrew: !!drawResult.lenght,
+            hasDrew: !!drawResult.length,
             isAdmin,
         }
 
@@ -108,7 +108,7 @@ module.exports.draw = async (event, context) => {
             }
         )
 
-        // TODO: 
+        // TODO: Notificar Participantes por email
 
         return {
             statusCode: 200,
